@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusConnect</title>
+
+    <!-- ✨ Font: Inter — Modern SaaS / Product Design Style -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- 🧠 Metadata -->
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta
+      name="description"
+      content="CampusConnect — Your smart student companion for campus success."
+    />
+
+    <!-- 🪩 Favicon (Optional) -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <style>
+      /* =============== GLOBAL RESET =============== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #0a0a0a; /* deep matte black background */
+        color: #ffffff;
+        font-family: "Inter", sans-serif;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      /* =============== GRADIENT LOGO =============== */
+      .nav-logo {
+        font-weight: 800;
+        font-size: 24px;
+        background: linear-gradient(90deg, #b5bafc, #9bb8ff, #c7d2fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 0.5px;
+      }
+
+      /* =============== HERO GRADIENT TEXT =============== */
+      .gradient-text {
+        font-size: 42px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        line-height: 1.1;
+        text-align: center;
+        background: linear-gradient(
+          90deg,
+          #e5e7eb 0%,    /* soft silver start */
+          #d1d5db 15%,   /* metallic silver */
+          #b4bafc 35%,   /* soft lavender */
+          #9ab8ff 55%,   /* gentle ice-blue */
+          #c7d2fe 75%,   /* pastel lavender-blue blend */
+          #e5e7eb 100%   /* silver end */
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 18px rgba(150, 180, 255, 0.18));
+        transition: background-position 2s ease;
+        background-size: 200%;
+      }
+
+      /* ✨ Shimmer Hover Animation (optional) */
+      .gradient-text:hover {
+        background-position: 100%;
+      }
+
+      /* =============== SUBTEXT =============== */
+      .subtext {
+        margin-top: 14px;
+        font-size: 18px;
+        font-weight: 400;
+        color: #9ca3af;
+        text-align: center;
+        max-width: 600px;
+      }
+
+      /* =============== BUTTONS =============== */
+      .btn {
+        margin-top: 28px;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #2563eb, #60a5fa);
+        color: white;
+        box-shadow: 0 0 15px rgba(96, 165, 250, 0.25);
+      }
+
+      .btn-primary:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid #4b5563;
+        color: #d1d5db;
+        margin-left: 10px;
+      }
+
+      .btn-secondary:hover {
+        border-color: #60a5fa;
+        color: #60a5fa;
+      }
+
+      /* =============== NAVBAR =============== */
+      nav {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 80px;
+      }
+
+      .nav-links a {
+        margin: 0 18px;
+        text-decoration: none;
+        color: #d1d5db;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: #9ab8ff;
+      }
+
+      /* =============== FOOTER =============== */
+      footer {
+        position: absolute;
+        bottom: 20px;
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      /* =============== RESPONSIVE =============== */
+      @media (max-width: 768px) {
+        .gradient-text {
+          font-size: 32px;
+          padding: 0 20px;
+        }
+        .subtext {
+          font-size: 16px;
+          padding: 0 20px;
+        }
+        nav {
+          flex-direction: column;
+          padding: 0 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-logo">CampusConnect</div>
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Events</a>
+        <a href="#">Contact</a>
+      </div>
+    </nav>
+
+    <main>
+      <h1 class="gradient-text">Your Campus Companion for<br />Smart Productivity</h1>
+      <p class="subtext">
+        Stay on top of deadlines, events, and teamwork — all in one place.
+      </p>
+      <div>
+        <button class="btn btn-primary">Get Started</button>
+        <button class="btn btn-secondary">Learn More</button>
+      </div>
+    </main>
+
+    <footer>© 2025 CampusConnect. All rights reserved.</footer>
+
+    <!-- React Entry -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+/* 🌈 Modern Gradient Navbar — CampusConnect */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 60px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 102, 255, 0.1) 0%,
+    rgba(59, 130, 246, 0.15) 50%,
+    rgba(0, 102, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
+}
+
+/* 🌙 Dark Mode Adjustments */
+.app.dark .navbar {
+  background: linear-gradient(
+    90deg,
+    rgba(25, 25, 25, 0.8) 0%,
+    rgba(15, 15, 15, 0.9) 50%,
+    rgba(25, 25, 25, 0.8) 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.app.light .navbar {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 247, 255, 0.7),
+    rgba(240, 243, 255, 0.8)
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 🪄 Logo */
+/* 🌈 Premium Gradient Logo */
+.logo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #a855f7, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  text-align: center;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.logo span {
+  background: linear-gradient(90deg, #60a5fa, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo:hover {
+  letter-spacing: 1.2px;
+  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.5));
+}
+
+/* 🔗 Nav Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #0066ff, #3b82f6);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-links a:hover {
+  color: #4b8bff;
+  text-shadow: 0 0 6px rgba(75, 139, 255, 0.6);
+}
+
+/* ✨ Sign In Button */
+.signin {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #4b8bff;
+  color: #4b8bff;
+  font-weight: 600;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.signin:hover {
+  background: linear-gradient(90deg, #0066ff, #3b82f6);
+  color: white;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  transform: translateY(-2px);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 12px 24px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+}
