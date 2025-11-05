@@ -1,16 +1,56 @@
-# React + Vite
+# 🎓 CampusConnect — Student Productivity MVP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> "Your Campus Companion for Smart Productivity"
 
-Currently, two official plugins are available:
+CampusConnect (codenamed *StudentSync) is my **first Product/Design MVP, combining **product thinking, Figma wireframing, and **frontend development (React + Vite)*.  
+It simplifies student life by bringing together *tasks, events, and deadlines* into one connected experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 About the Project
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This MVP was conceptualized and designed as part of my *Product Management learning journey*, focusing on how to:
+- Identify student productivity pain points 🎯  
+- Design a clean, usable UI in *Figma (wireframing to prototyping)*  
+- Implement an interactive, modern *frontend MVP using React + Vite*  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Features
+
+| Type | Description |
+|------|--------------|
+| 🧭 *Minimal UI* | Gradient-based hero section with responsive layout |
+| 🌓 *Dark/Light Mode* | Smooth theme toggle for accessibility |
+| 🧩 *Navigation Bar* | Sticky nav with animated hover states |
+| 📱 *Hero Section* | Product-style landing hero inspired by real SaaS websites |
+| 🎨 *Brand Design* | Color palette and typography aligned with MVP branding |
+| 🧠 *Scalable Architecture* | Modular components (Navbar, Hero, Footer) |
+
+---
+
+## 🧠 MVP Journey (STAR Model)
+
+*Situation:* Students struggle to manage multiple apps for assignments, events, and collaborations.  
+*Task:* Design and prototype a unified solution that improves campus productivity.  
+*Action:*  
+- Conducted quick user research and pain point analysis.  
+- Created *low-fidelity wireframes* and *interactive Figma prototypes*.  
+- Developed MVP using *React (Vite)* for speed and component reusability.  
+*Result:* A functional, design-consistent MVP showcasing real-world PM + design execution.
+
+---
+
+## 🧰 Tech Stack
+
+| Category | Tools |
+|-----------|-------|
+| 💻 Frontend | React (Vite) |
+| 🎨 Styling | CSS3, Flexbox, Gradients |
+| 🧩 Design | Figma (Wireframing + Prototyping) |
+| ☁ Version Control | Git + GitHub |
+| 🚀 Deployment | Vercel (recommended) |
+
+---
+
+## 🧭 Folder Structure
