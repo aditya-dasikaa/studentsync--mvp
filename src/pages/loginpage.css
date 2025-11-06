@@ -1,0 +1,318 @@
+/* ============================== 
+   LOGIN PAGE LAYOUT 
+============================== */
+.login-page {
+  min-height: 100vh;
+  height: 100%;
+  width: 100vw;
+  background: linear-gradient(to bottom, #1a1a1a 0%, #000000 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ============================== 
+   BACK BUTTON 
+============================== */
+.back-btn {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #9ca3af;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 100;
+  font-family: "Inter", sans-serif;
+}
+
+.back-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================== 
+   LOGIN LOGO 
+============================== */
+.login-logo {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  font-weight: 800;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 50%, #d1d5db 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  z-index: 100;
+}
+
+.login-logo span {
+  background: linear-gradient(135deg, #f0f0f0 0%, #c7d2fe 50%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================== 
+   LOGIN CONTAINER 
+============================== */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+/* ============================== 
+   CLERK STYLING 
+============================== */
+
+/* Root box */
+.clerk-root {
+  width: 100%;
+}
+
+/* Main card - glass effect with subtle styling */
+.clerk-card {
+  background: rgba(26, 26, 26, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  border-radius: 16px !important;
+  padding: 40px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  width: 100% !important;
+}
+
+/* Header container */
+.cl-header {
+  margin-bottom: 24px !important;
+}
+
+/* Title - compact size to fit in one line */
+.clerk-title {
+  color: #ffffff !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  font-family: "Inter", sans-serif !important;
+  margin-bottom: 6px !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* Subtitle */
+.clerk-subtitle {
+  color: #9ca3af !important;
+  text-align: center !important;
+  font-size: 14px !important;
+  font-family: "Inter", sans-serif !important;
+  line-height: 1.4 !important;
+}
+
+/* Social buttons */
+.clerk-social-btn {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease !important;
+}
+
+.clerk-social-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Form field container */
+.cl-formFieldRow {
+  margin-bottom: 16px !important;
+}
+
+/* Input labels */
+.clerk-label {
+  color: #d1d5db !important;
+  font-weight: 500 !important;
+  margin-bottom: 6px !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 14px !important;
+}
+
+/* Input fields */
+.clerk-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 12px 14px !important;
+  font-size: 15px !important;
+  transition: all 0.3s ease !important;
+  font-family: "Inter", sans-serif !important;
+}
+
+.clerk-input:focus {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.clerk-input::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Primary button - subtle blue */
+.clerk-button-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 600 !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3) !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 15px !important;
+  margin-top: 8px !important;
+}
+
+.clerk-button-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 30px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Links */
+.clerk-link {
+  color: #60a5fa !important;
+  font-weight: 500 !important;
+  transition: color 0.3s ease !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 14px !important;
+}
+
+.clerk-link:hover {
+  color: #93c5fd !important;
+}
+
+/* Text elements */
+.clerk-text {
+  color: #9ca3af !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 14px !important;
+}
+
+/* Divider */
+.cl-dividerRow {
+  color: #4b5563 !important;
+  margin: 20px 0 !important;
+}
+
+.cl-dividerText {
+  color: #6b7280 !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 13px !important;
+}
+
+/* Footer actions */
+.cl-footerAction {
+  margin-top: 20px !important;
+}
+
+.cl-footerActionText {
+  color: #9ca3af !important;
+  font-size: 14px !important;
+  font-family: "Inter", sans-serif !important;
+}
+
+/* ============================== 
+   FOOTER 
+============================== */
+.login-footer {
+  padding: 24px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  position: relative;
+}
+
+/* ============================== 
+   RESPONSIVE 
+============================== */
+@media (max-width: 768px) {
+  .back-btn {
+    top: 16px;
+    left: 16px;
+  }
+
+  .login-logo {
+    top: 16px;
+    font-size: 24px;
+  }
+
+  .clerk-card {
+    padding: 32px 24px !important;
+  }
+
+  .login-container {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .clerk-title {
+    font-size: 18px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .clerk-card {
+    padding: 28px 20px !important;
+  }
+
+  .login-logo {
+    font-size: 22px;
+  }
+
+  .clerk-title {
+    font-size: 17px !important;
+  }
+}
+.dashboard-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-home-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-home-btn:hover {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}

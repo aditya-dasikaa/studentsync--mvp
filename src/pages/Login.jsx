@@ -1,24 +1,56 @@
+import React from "react";
+import { SignIn } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import "./loginpage.css";
+
 function Login() {
+  const navigate = useNavigate();
+
   return (
     <div className="login-page">
-      <div className="login-box">
-        <h2>Sign In to CampusConnect</h2>
-        <p>Welcome back! Please sign in to continue.</p>
+      {/* BACK BUTTON */}
+      <button className="back-btn" onClick={() => navigate("/")}>
+        ← Back to Home
+      </button>
 
-        <button className="google-btn">
-          <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" />
-          Continue with Google
-        </button>
-
-        <div className="divider">or</div>
-
-        <input type="email" placeholder="Enter your email address" />
-        <button className="continue-btn">Continue →</button>
-
-        <p className="signup-text">
-          Don’t have an account? <a href="#">Sign Up</a>
-        </p>
+      {/* LOGO */}
+      <div className="login-logo">
+        Campus<span>Connect</span>
       </div>
+
+      {/* CLERK SIGN-IN CARD */}
+      <div className="login-container">
+        <SignIn
+          path="/login"
+          routing="path"
+          signUpUrl="/login"
+          afterSignInUrl="/dashboard"
+          afterSignUpUrl="/dashboard"
+          appearance={{
+            elements: {
+              rootBox: "clerk-root",
+              card: "clerk-card",
+              headerTitle: "clerk-title",
+              headerSubtitle: "clerk-subtitle",
+              socialButtonsBlockButton: "clerk-social-btn",
+              formButtonPrimary: "clerk-button-primary",
+              formFieldInput: "clerk-input",
+              footerActionLink: "clerk-link",
+              identityPreviewText: "clerk-text",
+              formFieldLabel: "clerk-label",
+            },
+            layout: {
+              socialButtonsPlacement: "top",
+              socialButtonsVariant: "iconButton",
+            },
+          }}
+        />
+      </div>
+
+      {/* FOOTER */}
+      <footer className="login-footer">
+        © 2025 CampusConnect. All rights reserved.
+      </footer>
     </div>
   );
 }
