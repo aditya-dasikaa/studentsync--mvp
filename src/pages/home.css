@@ -267,3 +267,7 @@
     font-size: 15px;
   }
 }
+.gradient-text:hover {
+  background-position: 100%;
+  filter: brightness(1.05);
+}

@@ -1,0 +1,143 @@
+/* ================================
+   ABOUT PAGE - LAYOUT FIX
+================================ */
+.about-page {
+  width: 100vw; /* Full width of the viewport */
+  min-height: 100vh; /* Full height */
+  background-color: #ffffff; /* White clean background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: hidden; /* Prevents black strip from overflow */
+  font-family: "Inter", sans-serif;
+  color: #1e293b;
+}
+
+/* Navbar */
+.about-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 20px 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Logo */
+.about-nav .nav-logo {
+  font-weight: 800;
+  font-size: 26px;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Navigation links */
+.about-nav .nav-links a {
+  margin: 0 18px;
+  text-decoration: none;
+  color: #334155;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.about-nav .nav-links a:hover {
+  color: #2563eb;
+}
+
+/* ================================
+   MAIN CONTENT
+================================ */
+.about-main {
+  width: 100%;
+  max-width: 1200px;
+  padding: 60px 80px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.about-title {
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-subtitle {
+  font-size: 18px;
+  color: #475569;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+/* Section spacing */
+.about-content,
+.about-features,
+.about-mission,
+.about-vision {
+  margin-top: 40px;
+}
+
+.about-content p {
+  font-size: 16px;
+  color: #334155;
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+
+/* Features list */
+.about-features h2,
+.about-mission h2,
+.about-vision h2 {
+  color: #1e3a8a;
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+
+.about-features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.about-features li {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #334155;
+}
+
+/* Footer */
+.about-footer {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #64748b;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-nav {
+    padding: 20px 24px;
+  }
+
+  .about-main {
+    padding: 32px 24px;
+  }
+
+  .about-title {
+    font-size: 28px;
+  }
+
+  .about-subtitle {
+    font-size: 16px;
+  }
+}
