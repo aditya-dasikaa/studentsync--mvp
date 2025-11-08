@@ -1,4 +1,3 @@
-// Dashboard.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useUser, UserButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
@@ -22,107 +21,52 @@ function Dashboard() {
   const [editingTask, setEditingTask] = useState(null);
   const [filter, setFilter] = useState("all");
 
-  // Audio ref for alarm sound
   const alarmAudioRef = useRef(null);
 
-  // ✅ Load tasks from localStorage
-  useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(storedTasks);
-  }, []);
+  const BACKEND_URL = "http://localhost:5000/api/tasks"; // ✅ your backend API
 
-  // ✅ Save tasks to localStorage when changed
+  // ✅ Fetch tasks from MongoDB for this user
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    if (!user) return;
+    fetch(`${BACKEND_URL}/${user.id}`)
+      .then((res) => res.json())
+      .then((data) => setTasks(data))
+      .catch((err) => console.error("Error fetching tasks:", err));
+  }, [user]);
 
-  // ✅ Check for alarms every 30 seconds
-  useEffect(() => {
-    const checkAlarms = setInterval(() => {
-      const now = new Date();
-      const currentDateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  // ✅ Add new task (POST to backend)
+  const handleAddTask = async () => {
+    if (!newTask.trim() || !newDate || !priority) return;
 
-      tasks.forEach(task => {
-        if (task.alarmEnabled && task.alarmTime && !task.alarmTriggered) {
-          const taskAlarmDateTime = `${task.date}T${task.alarmTime}`;
-          
-          if (currentDateTime === taskAlarmDateTime) {
-            // Trigger alarm
-            triggerAlarm(task);
-            
-            // Mark as triggered
-            const updatedTasks = tasks.map(t => 
-              t.id === task.id ? { ...t, alarmTriggered: true } : t
-            );
-            setTasks(updatedTasks);
-          }
-        }
+    const taskData = {
+      userId: user.id,
+      text: newTask,
+      desc: taskDesc,
+      date: newDate,
+      priority,
+      category,
+      alarmEnabled,
+      alarmTime,
+      status: "pending",
+    };
+
+    try {
+      const res = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(taskData),
       });
-    }, 30000); // Check every 30 seconds
-
-    return () => clearInterval(checkAlarms);
-  }, [tasks]);
-
-  // ✅ Trigger alarm notification (WITHOUT alert popup)
-  const triggerAlarm = (task) => {
-    // Play sound
-    if (alarmAudioRef.current) {
-      alarmAudioRef.current.play().catch(err => console.log("Audio play failed:", err));
-    }
-
-    // Show browser notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("⏰ Task Reminder", {
-        body: `${task.text}\nDue: ${task.date}`,
-        icon: "/favicon.ico",
-        badge: "/favicon.ico",
-        tag: `task-${task.id}`
-      });
-    } else if ("Notification" in window && Notification.permission === "default") {
-      // Request permission if not granted
-      Notification.requestPermission();
+      const savedTask = await res.json();
+      setTasks([...tasks, savedTask]);
+      setShowModal(false);
+      resetTaskForm();
+    } catch (err) {
+      console.error("Error saving task:", err);
     }
   };
 
-  // ✅ Request notification permission on mount
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
-
-  // ✅ Sorting by priority → date
-  const sortedTasks = [...tasks].sort((a, b) => {
-    const order = { high: 1, medium: 2, low: 3, "": 4 };
-    const priorityDiff = order[a.priority] - order[b.priority];
-    if (priorityDiff !== 0) return priorityDiff;
-
-    const dateA = a.date ? new Date(a.date) : new Date("2100-01-01");
-    const dateB = b.date ? new Date(b.date) : new Date("2100-01-01");
-    return dateA - dateB;
-  });
-
-  // ✅ Add new task
-  const handleAddTask = () => {
-    if (!newTask.trim() || !newDate || !priority) return;
-
-    const updatedTasks = [
-      ...tasks,
-      {
-        id: Date.now(),
-        text: newTask,
-        desc: taskDesc,
-        date: newDate,
-        priority: priority,
-        category: category,
-        status: "pending",
-        alarmEnabled: alarmEnabled,
-        alarmTime: alarmEnabled ? alarmTime : null,
-        alarmTriggered: false
-      },
-    ];
-
-    setTasks(updatedTasks);
+  // ✅ Reset form fields
+  const resetTaskForm = () => {
     setNewTask("");
     setTaskDesc("");
     setNewDate("");
@@ -130,17 +74,50 @@ function Dashboard() {
     setCategory("");
     setAlarmEnabled(false);
     setAlarmTime("");
-    setShowModal(false);
   };
 
-  // ✅ Toggle Task Completion
-  const toggleTaskStatus = (id) => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === id
-        ? { ...task, status: task.status === "completed" ? "pending" : "completed" }
-        : task
-    );
-    setTasks(updatedTasks);
+  // ✅ Update task status (PUT to backend)
+  const toggleTaskStatus = async (id, currentStatus) => {
+    const updatedStatus = currentStatus === "completed" ? "pending" : "completed";
+    try {
+      const res = await fetch(`${BACKEND_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: updatedStatus }),
+      });
+      const updatedTask = await res.json();
+      setTasks(tasks.map((t) => (t._id === id ? updatedTask : t)));
+    } catch (err) {
+      console.error("Error updating task:", err);
+    }
+  };
+
+  // ✅ Save edited task (PUT)
+  const handleSaveEdit = async () => {
+    if (!editingTask) return;
+    try {
+      const res = await fetch(`${BACKEND_URL}/${editingTask._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingTask),
+      });
+      const updated = await res.json();
+      setTasks(tasks.map((t) => (t._id === updated._id ? updated : t)));
+      setShowEditModal(false);
+      setEditingTask(null);
+    } catch (err) {
+      console.error("Error updating task:", err);
+    }
+  };
+
+  // ✅ Delete a task
+  const handleDeleteTask = async (id) => {
+    try {
+      await fetch(`${BACKEND_URL}/${id}`, { method: "DELETE" });
+      setTasks(tasks.filter((t) => t._id !== id));
+    } catch (err) {
+      console.error("Error deleting task:", err);
+    }
   };
 
   // ✅ Open edit modal
@@ -149,21 +126,8 @@ function Dashboard() {
     setShowEditModal(true);
   };
 
-  // ✅ Save edited task
-  const handleSaveEdit = () => {
-    if (!editingTask) return;
-
-    const updatedTasks = tasks.map(task =>
-      task.id === editingTask.id ? { ...editingTask, alarmTriggered: false } : task
-    );
-
-    setTasks(updatedTasks);
-    setShowEditModal(false);
-    setEditingTask(null);
-  };
-
-  // ✅ Apply filter
-  const filteredTasks = sortedTasks.filter((task) => {
+  // ✅ Filter tasks
+  const filteredTasks = tasks.filter((task) => {
     if (filter === "all") return true;
     if (filter === "pending") return task.status === "pending";
     if (filter === "completed") return task.status === "completed";
@@ -172,7 +136,7 @@ function Dashboard() {
 
   // ✅ Get category icon
   const getCategoryIcon = (cat) => {
-    switch(cat) {
+    switch (cat) {
       case "academic": return "📚";
       case "selfcare": return "🧘";
       case "family": return "👨‍👩‍👧";
@@ -185,14 +149,7 @@ function Dashboard() {
   };
 
   // ✅ Loading / redirect
-  if (!isLoaded) {
-    return (
-      <div className="dashboard-loading">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
+  if (!isLoaded) return <div className="dashboard-loading"><p>Loading...</p></div>;
   if (!user) {
     navigate("/login");
     return null;
@@ -200,7 +157,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Hidden audio element for alarm sound */}
+      {/* Hidden audio element for alarms */}
       <audio ref={alarmAudioRef} src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" />
 
       {/* NAVBAR */}
@@ -235,37 +192,28 @@ function Dashboard() {
             </button>
           </div>
 
-          {/* Your Tasks Card */}
+          {/* Tasks Card */}
           <div className="card">
             <h3>Your Tasks</h3>
 
             {/* FILTER BAR */}
             <div className="filter-bar">
-              <button
-                className={`filter-btn ${filter === "all" ? "active" : ""}`}
-                onClick={() => setFilter("all")}
-              >
-                All
-              </button>
-              <button
-                className={`filter-btn ${filter === "pending" ? "active" : ""}`}
-                onClick={() => setFilter("pending")}
-              >
-                Pending
-              </button>
-              <button
-                className={`filter-btn ${filter === "completed" ? "active" : ""}`}
-                onClick={() => setFilter("completed")}
-              >
-                Completed
-              </button>
+              {["all", "pending", "completed"].map((type) => (
+                <button
+                  key={type}
+                  className={`filter-btn ${filter === type ? "active" : ""}`}
+                  onClick={() => setFilter(type)}
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
             </div>
 
             {/* TASK LIST */}
             {filteredTasks.length > 0 ? (
               filteredTasks.map((task) => (
                 <div
-                  key={task.id}
+                  key={task._id}
                   className={`task-item priority-${task.priority} ${
                     task.status === "completed" ? "completed-task" : ""
                   }`}
@@ -273,25 +221,19 @@ function Dashboard() {
                   <div className="task-header">
                     <h4>{task.text}</h4>
                     <span
-                      className={`status-badge ${
-                        task.status === "completed" ? "completed" : "pending"
-                      }`}
-                      onClick={() => toggleTaskStatus(task.id)}
+                      className={`status-badge ${task.status}`}
+                      onClick={() => toggleTaskStatus(task._id, task.status)}
                     >
                       {task.status === "completed" ? "✔ Completed" : "⏳ Pending"}
                     </span>
                   </div>
                   {task.desc && <p className="task-desc">{task.desc}</p>}
-                  
-                  <div className="task-meta">
-                    <p className="task-date-time" onClick={() => openEditModal(task)}>
-                      📅 {task.date}
-                      {task.alarmEnabled && task.alarmTime && (
-                        <span className="alarm-indicator"> | ⏰ {task.alarmTime}</span>
-                      )}
-                    </p>
+                  <div className="task-meta" onClick={() => openEditModal(task)}>
+                    📅 {task.date}
+                    {task.alarmEnabled && task.alarmTime && (
+                      <span className="alarm-indicator"> | ⏰ {task.alarmTime}</span>
+                    )}
                   </div>
-
                   <div className="task-footer">
                     <span className="priority-label">
                       {task.priority === "high" && "🔴 High"}
@@ -300,9 +242,13 @@ function Dashboard() {
                     </span>
                     {task.category && (
                       <span className="category-badge">
-                        {getCategoryIcon(task.category)} {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
+                        {getCategoryIcon(task.category)}{" "}
+                        {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
                       </span>
                     )}
+                    <button className="delete-btn" onClick={() => handleDeleteTask(task._id)}>
+                      🗑
+                    </button>
                   </div>
                 </div>
               ))
@@ -318,44 +264,16 @@ function Dashboard() {
         <div className="modal-overlay">
           <div className="modal">
             <h3>Add New Task</h3>
-
-            <input
-              type="text"
-              placeholder="Task Title"
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-            />
-
-            <textarea
-              placeholder="Task Description (optional)"
-              value={taskDesc}
-              onChange={(e) => setTaskDesc(e.target.value)}
-              rows="3"
-            />
-
-            <input
-              type="date"
-              value={newDate}
-              onChange={(e) => setNewDate(e.target.value)}
-            />
-
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="priority-select"
-            >
+            <input type="text" placeholder="Task Title" value={newTask} onChange={(e) => setNewTask(e.target.value)} />
+            <textarea placeholder="Description (optional)" value={taskDesc} onChange={(e) => setTaskDesc(e.target.value)} rows="3" />
+            <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="priority-select">
               <option value="">Select Priority</option>
               <option value="high">🔴 High</option>
               <option value="medium">🟡 Medium</option>
               <option value="low">🟢 Low</option>
             </select>
-
-            {/* CATEGORY SELECT */}
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="category-select"
-            >
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="category-select">
               <option value="">Select Category (Optional)</option>
               <option value="academic">📚 Academic</option>
               <option value="selfcare">🧘 Self Care</option>
@@ -366,42 +284,19 @@ function Dashboard() {
               <option value="other">📌 Other</option>
             </select>
 
-            {/* ALARM SECTION */}
             <div className="alarm-section">
               <label className="alarm-checkbox">
-                <input
-                  type="checkbox"
-                  checked={alarmEnabled}
-                  onChange={(e) => setAlarmEnabled(e.target.checked)}
-                />
+                <input type="checkbox" checked={alarmEnabled} onChange={(e) => setAlarmEnabled(e.target.checked)} />
                 <span>Set Reminder/Alarm</span>
               </label>
-
               {alarmEnabled && (
-                <input
-                  type="time"
-                  value={alarmTime}
-                  onChange={(e) => setAlarmTime(e.target.value)}
-                  className="alarm-time-input"
-                />
+                <input type="time" value={alarmTime} onChange={(e) => setAlarmTime(e.target.value)} className="alarm-time-input" />
               )}
             </div>
 
             <div className="modal-actions">
-              <button className="save-btn" onClick={handleAddTask}>
-                Save Task
-              </button>
-              <button
-                className="cancel-btn"
-                onClick={() => {
-                  setShowModal(false);
-                  setAlarmEnabled(false);
-                  setAlarmTime("");
-                  setCategory("");
-                }}
-              >
-                Cancel
-              </button>
+              <button className="save-btn" onClick={handleAddTask}>Save Task</button>
+              <button className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
             </div>
           </div>
         </div>
@@ -411,22 +306,12 @@ function Dashboard() {
       {showEditModal && editingTask && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Edit Task Details</h3>
-
-            <label className="edit-label">Due Date</label>
-            <input
-              type="date"
-              value={editingTask.date}
-              onChange={(e) => setEditingTask({ ...editingTask, date: e.target.value })}
-            />
-
-            <label className="edit-label">Category</label>
-            <select
-              value={editingTask.category || ""}
-              onChange={(e) => setEditingTask({ ...editingTask, category: e.target.value })}
-              className="category-select"
-            >
-              <option value="">Select Category (Optional)</option>
+            <h3>Edit Task</h3>
+            <label>Date</label>
+            <input type="date" value={editingTask.date} onChange={(e) => setEditingTask({ ...editingTask, date: e.target.value })} />
+            <label>Category</label>
+            <select value={editingTask.category || ""} onChange={(e) => setEditingTask({ ...editingTask, category: e.target.value })}>
+              <option value="">Select Category</option>
               <option value="academic">📚 Academic</option>
               <option value="selfcare">🧘 Self Care</option>
               <option value="family">👨‍👩‍👧 Family</option>
@@ -435,44 +320,32 @@ function Dashboard() {
               <option value="health">❤️ Health</option>
               <option value="other">📌 Other</option>
             </select>
-
             <div className="alarm-section">
               <label className="alarm-checkbox">
                 <input
                   type="checkbox"
                   checked={editingTask.alarmEnabled || false}
-                  onChange={(e) => setEditingTask({ 
-                    ...editingTask, 
-                    alarmEnabled: e.target.checked,
-                    alarmTime: e.target.checked ? editingTask.alarmTime : null
-                  })}
+                  onChange={(e) =>
+                    setEditingTask({
+                      ...editingTask,
+                      alarmEnabled: e.target.checked,
+                      alarmTime: e.target.checked ? editingTask.alarmTime : null,
+                    })
+                  }
                 />
                 <span>Set Reminder/Alarm</span>
               </label>
-
               {editingTask.alarmEnabled && (
                 <input
                   type="time"
                   value={editingTask.alarmTime || ""}
                   onChange={(e) => setEditingTask({ ...editingTask, alarmTime: e.target.value })}
-                  className="alarm-time-input"
                 />
               )}
             </div>
-
             <div className="modal-actions">
-              <button className="save-btn" onClick={handleSaveEdit}>
-                Save Changes
-              </button>
-              <button
-                className="cancel-btn"
-                onClick={() => {
-                  setShowEditModal(false);
-                  setEditingTask(null);
-                }}
-              >
-                Cancel
-              </button>
+              <button className="save-btn" onClick={handleSaveEdit}>Save Changes</button>
+              <button className="cancel-btn" onClick={() => setShowEditModal(false)}>Cancel</button>
             </div>
           </div>
         </div>
