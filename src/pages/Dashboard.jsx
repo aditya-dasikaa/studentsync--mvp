@@ -23,13 +23,16 @@ function Dashboard() {
 
   const alarmAudioRef = useRef(null);
 
-  const BACKEND_URL = "http://localhost:5000/api/tasks"; // ✅ your backend API
+  const BACKEND_URL = "http://localhost:5000/api/tasks";
 
-  // ✅ Fetch tasks from MongoDB for this user
+  // ✅ Fetch tasks from backend for this user
   useEffect(() => {
     if (!user) return;
     fetch(`${BACKEND_URL}/${user.id}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch tasks");
+        return res.json();
+      })
       .then((data) => setTasks(data))
       .catch((err) => console.error("Error fetching tasks:", err));
   }, [user]);
@@ -56,8 +59,9 @@ function Dashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskData),
       });
+      if (!res.ok) throw new Error("Failed to save task");
       const savedTask = await res.json();
-      setTasks([...tasks, savedTask]);
+      setTasks((prev) => [...prev, savedTask]);
       setShowModal(false);
       resetTaskForm();
     } catch (err) {
@@ -85,8 +89,9 @@ function Dashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: updatedStatus }),
       });
+      if (!res.ok) throw new Error("Failed to update task status");
       const updatedTask = await res.json();
-      setTasks(tasks.map((t) => (t._id === id ? updatedTask : t)));
+      setTasks((prev) => prev.map((t) => (t._id === id ? updatedTask : t)));
     } catch (err) {
       console.error("Error updating task:", err);
     }
@@ -101,8 +106,9 @@ function Dashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editingTask),
       });
+      if (!res.ok) throw new Error("Failed to save edited task");
       const updated = await res.json();
-      setTasks(tasks.map((t) => (t._id === updated._id ? updated : t)));
+      setTasks((prev) => prev.map((t) => (t._id === updated._id ? updated : t)));
       setShowEditModal(false);
       setEditingTask(null);
     } catch (err) {
@@ -113,8 +119,9 @@ function Dashboard() {
   // ✅ Delete a task
   const handleDeleteTask = async (id) => {
     try {
-      await fetch(`${BACKEND_URL}/${id}`, { method: "DELETE" });
-      setTasks(tasks.filter((t) => t._id !== id));
+      const res = await fetch(`${BACKEND_URL}/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete task");
+      setTasks((prev) => prev.filter((t) => t._id !== id));
     } catch (err) {
       console.error("Error deleting task:", err);
     }
@@ -122,7 +129,7 @@ function Dashboard() {
 
   // ✅ Open edit modal
   const openEditModal = (task) => {
-    setEditingTask(task);
+    setEditingTask({ ...task });
     setShowEditModal(true);
   };
 
@@ -137,14 +144,22 @@ function Dashboard() {
   // ✅ Get category icon
   const getCategoryIcon = (cat) => {
     switch (cat) {
-      case "academic": return "📚";
-      case "selfcare": return "🧘";
-      case "family": return "👨‍👩‍👧";
-      case "work": return "💼";
-      case "social": return "🎉";
-      case "health": return "❤️";
-      case "other": return "📌";
-      default: return "";
+      case "academic":
+        return "📚";
+      case "selfcare":
+        return "🧘";
+      case "family":
+        return "👨‍👩‍👧";
+      case "work":
+        return "💼";
+      case "social":
+        return "🎉";
+      case "health":
+        return "❤";
+      case "other":
+        return "📌";
+      default:
+        return "";
     }
   };
 
@@ -280,7 +295,7 @@ function Dashboard() {
               <option value="family">👨‍👩‍👧 Family</option>
               <option value="work">💼 Work</option>
               <option value="social">🎉 Social</option>
-              <option value="health">❤️ Health</option>
+              <option value="health">❤ Health</option>
               <option value="other">📌 Other</option>
             </select>
 
@@ -317,7 +332,7 @@ function Dashboard() {
               <option value="family">👨‍👩‍👧 Family</option>
               <option value="work">💼 Work</option>
               <option value="social">🎉 Social</option>
-              <option value="health">❤️ Health</option>
+              <option value="health">❤ Health</option>
               <option value="other">📌 Other</option>
             </select>
             <div className="alarm-section">
@@ -345,7 +360,7 @@ function Dashboard() {
             </div>
             <div className="modal-actions">
               <button className="save-btn" onClick={handleSaveEdit}>Save Changes</button>
-              <button className="cancel-btn" onClick={() => setShowEditModal(false)}>Cancel</button>
+              <button className="cancel-btn" onClick={() => { setShowEditModal(false); setEditingTask(null); }}>Cancel</button>
             </div>
           </div>
         </div>
