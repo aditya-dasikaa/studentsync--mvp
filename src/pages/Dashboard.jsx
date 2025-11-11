@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useUser, UserButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { FaEllipsisV } from "react-icons/fa";
 import "./dashboard.css";
 
 function Dashboard() {
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
 
-  // ✅ State variables
   const [newTask, setNewTask] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [newDate, setNewDate] = useState("");
@@ -20,12 +20,16 @@ function Dashboard() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [openMenuId, setOpenMenuId] = useState(null); // 🔥 For 3-dots dropdown
 
   const alarmAudioRef = useRef(null);
 
   const BACKEND_URL = "http://localhost:5000/api/tasks";
 
+<<<<<<< HEAD
   // ✅ Fetch tasks from backend for this user
+=======
+>>>>>>> cf37159 (Added global Navbar and Footer components with styling across all pages)
   useEffect(() => {
     if (!user) return;
     fetch(`${BACKEND_URL}/${user.id}`)
@@ -37,9 +41,11 @@ function Dashboard() {
       .catch((err) => console.error("Error fetching tasks:", err));
   }, [user]);
 
-  // ✅ Add new task (POST to backend)
   const handleAddTask = async () => {
-    if (!newTask.trim() || !newDate || !priority) return;
+    if (!newTask.trim() || !taskDesc.trim() || !newDate || !category) {
+      alert("Please fill out all required fields: Title, Description, Date, and Category.");
+      return;
+    }
 
     const taskData = {
       userId: user.id,
@@ -69,7 +75,6 @@ function Dashboard() {
     }
   };
 
-  // ✅ Reset form fields
   const resetTaskForm = () => {
     setNewTask("");
     setTaskDesc("");
@@ -80,7 +85,6 @@ function Dashboard() {
     setAlarmTime("");
   };
 
-  // ✅ Update task status (PUT to backend)
   const toggleTaskStatus = async (id, currentStatus) => {
     const updatedStatus = currentStatus === "completed" ? "pending" : "completed";
     try {
@@ -97,7 +101,6 @@ function Dashboard() {
     }
   };
 
-  // ✅ Save edited task (PUT)
   const handleSaveEdit = async () => {
     if (!editingTask) return;
     try {
@@ -116,7 +119,6 @@ function Dashboard() {
     }
   };
 
-  // ✅ Delete a task
   const handleDeleteTask = async (id) => {
     try {
       const res = await fetch(`${BACKEND_URL}/${id}`, { method: "DELETE" });
@@ -127,13 +129,11 @@ function Dashboard() {
     }
   };
 
-  // ✅ Open edit modal
   const openEditModal = (task) => {
     setEditingTask({ ...task });
     setShowEditModal(true);
   };
 
-  // ✅ Filter tasks
   const filteredTasks = tasks.filter((task) => {
     if (filter === "all") return true;
     if (filter === "pending") return task.status === "pending";
@@ -141,7 +141,6 @@ function Dashboard() {
     return true;
   });
 
-  // ✅ Get category icon
   const getCategoryIcon = (cat) => {
     switch (cat) {
       case "academic":
@@ -163,7 +162,6 @@ function Dashboard() {
     }
   };
 
-  // ✅ Loading / redirect
   if (!isLoaded) return <div className="dashboard-loading"><p>Loading...</p></div>;
   if (!user) {
     navigate("/login");
@@ -172,46 +170,30 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Hidden audio element for alarms */}
       <audio ref={alarmAudioRef} src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" />
 
-      {/* NAVBAR */}
       <nav className="dashboard-nav">
         <div className="dashboard-left">
-          <button className="home-btn" onClick={() => navigate("/")}>
-            ← Home
-          </button>
-          <h2 className="dashboard-logo">
-            Campus<span>Connect</span>
-          </h2>
+          <button className="home-btn" onClick={() => navigate("/")}>← Home</button>
+          <h2 className="dashboard-logo">Campus<span>Connect</span></h2>
         </div>
         <UserButton afterSignOutUrl="/" />
       </nav>
 
-      {/* MAIN CONTENT */}
       <main className="dashboard-content">
-        <h1 className="welcome-text">
-          Welcome back, {user?.firstName || "Student"} 👋
-        </h1>
-        <p className="dashboard-subtitle">
-          Stay organized and manage your tasks with ease.
-        </p>
+        <h1 className="welcome-text">Welcome back, {user?.firstName || "Student"} 👋</h1>
+        <p className="dashboard-subtitle">Stay organized and manage your tasks with ease.</p>
 
         <div className="cards">
-          {/* Add Task Card */}
           <div className="card">
             <h3>Add Task</h3>
             <p>Keep track of assignments and due dates.</p>
-            <button className="card-button" onClick={() => setShowModal(true)}>
-              Add New Task
-            </button>
+            <button className="card-button" onClick={() => setShowModal(true)}>Add New Task</button>
           </div>
 
-          {/* Tasks Card */}
           <div className="card">
             <h3>Your Tasks</h3>
 
-            {/* FILTER BAR */}
             <div className="filter-bar">
               {["all", "pending", "completed"].map((type) => (
                 <button
@@ -224,31 +206,65 @@ function Dashboard() {
               ))}
             </div>
 
-            {/* TASK LIST */}
             {filteredTasks.length > 0 ? (
               filteredTasks.map((task) => (
                 <div
                   key={task._id}
-                  className={`task-item priority-${task.priority} ${
-                    task.status === "completed" ? "completed-task" : ""
-                  }`}
+                  className={`task-item priority-${task.priority} ${task.status === "completed" ? "completed-task" : ""}`}
                 >
                   <div className="task-header">
                     <h4>{task.text}</h4>
-                    <span
-                      className={`status-badge ${task.status}`}
-                      onClick={() => toggleTaskStatus(task._id, task.status)}
-                    >
-                      {task.status === "completed" ? "✔ Completed" : "⏳ Pending"}
-                    </span>
+
+                    <div className="task-options">
+                      <span
+                        className={`status-badge ${task.status}`}
+                        onClick={() => toggleTaskStatus(task._id, task.status)}
+                      >
+                        {task.status === "completed" ? "✔ Completed" : "⏳ Pending"}
+                      </span>
+
+                      <div className="menu-container">
+                        <FaEllipsisV
+                          className="menu-icon"
+                          onClick={() =>
+                            setOpenMenuId(openMenuId === task._id ? null : task._id)
+                          }
+                        />
+                        {openMenuId === task._id && (
+                          <div className="dropdown-menu">
+                            <button
+                              className="dropdown-item edit"
+                              onClick={() => {
+                                openEditModal(task);
+                                setOpenMenuId(null);
+                              }}
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              className="dropdown-item delete"
+                              onClick={() => {
+                                handleDeleteTask(task._id);
+                                setOpenMenuId(null);
+                              }}
+                            >
+                              🗑 Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
+
                   {task.desc && <p className="task-desc">{task.desc}</p>}
-                  <div className="task-meta" onClick={() => openEditModal(task)}>
+
+                  <div className="task-meta">
                     📅 {task.date}
                     {task.alarmEnabled && task.alarmTime && (
                       <span className="alarm-indicator"> | ⏰ {task.alarmTime}</span>
                     )}
                   </div>
+
                   <div className="task-footer">
                     <span className="priority-label">
                       {task.priority === "high" && "🔴 High"}
@@ -261,9 +277,6 @@ function Dashboard() {
                         {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
                       </span>
                     )}
-                    <button className="delete-btn" onClick={() => handleDeleteTask(task._id)}>
-                      🗑
-                    </button>
                   </div>
                 </div>
               ))
@@ -274,22 +287,22 @@ function Dashboard() {
         </div>
       </main>
 
-      {/* ADD TASK MODAL */}
+      {/* Add Task Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
             <h3>Add New Task</h3>
-            <input type="text" placeholder="Task Title" value={newTask} onChange={(e) => setNewTask(e.target.value)} />
-            <textarea placeholder="Description (optional)" value={taskDesc} onChange={(e) => setTaskDesc(e.target.value)} rows="3" />
-            <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
-            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="priority-select">
-              <option value="">Select Priority</option>
+            <input type="text" placeholder="Task Title" value={newTask} onChange={(e) => setNewTask(e.target.value)} required />
+            <textarea placeholder="Description" value={taskDesc} onChange={(e) => setTaskDesc(e.target.value)} rows="3" required />
+            <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} required />
+            <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+              <option value="">Select Priority (Optional)</option>
               <option value="high">🔴 High</option>
               <option value="medium">🟡 Medium</option>
               <option value="low">🟢 Low</option>
             </select>
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="category-select">
-              <option value="">Select Category (Optional)</option>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} required>
+              <option value="">Select Category</option>
               <option value="academic">📚 Academic</option>
               <option value="selfcare">🧘 Self Care</option>
               <option value="family">👨‍👩‍👧 Family</option>
@@ -298,17 +311,13 @@ function Dashboard() {
               <option value="health">❤ Health</option>
               <option value="other">📌 Other</option>
             </select>
-
             <div className="alarm-section">
-              <label className="alarm-checkbox">
+              <label>
                 <input type="checkbox" checked={alarmEnabled} onChange={(e) => setAlarmEnabled(e.target.checked)} />
                 <span>Set Reminder/Alarm</span>
               </label>
-              {alarmEnabled && (
-                <input type="time" value={alarmTime} onChange={(e) => setAlarmTime(e.target.value)} className="alarm-time-input" />
-              )}
+              {alarmEnabled && <input type="time" value={alarmTime} onChange={(e) => setAlarmTime(e.target.value)} />}
             </div>
-
             <div className="modal-actions">
               <button className="save-btn" onClick={handleAddTask}>Save Task</button>
               <button className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
@@ -317,7 +326,7 @@ function Dashboard() {
         </div>
       )}
 
-      {/* EDIT TASK MODAL */}
+      {/* Edit Task Modal */}
       {showEditModal && editingTask && (
         <div className="modal-overlay">
           <div className="modal">
@@ -336,26 +345,12 @@ function Dashboard() {
               <option value="other">📌 Other</option>
             </select>
             <div className="alarm-section">
-              <label className="alarm-checkbox">
-                <input
-                  type="checkbox"
-                  checked={editingTask.alarmEnabled || false}
-                  onChange={(e) =>
-                    setEditingTask({
-                      ...editingTask,
-                      alarmEnabled: e.target.checked,
-                      alarmTime: e.target.checked ? editingTask.alarmTime : null,
-                    })
-                  }
-                />
+              <label>
+                <input type="checkbox" checked={editingTask.alarmEnabled || false} onChange={(e) => setEditingTask({ ...editingTask, alarmEnabled: e.target.checked })} />
                 <span>Set Reminder/Alarm</span>
               </label>
               {editingTask.alarmEnabled && (
-                <input
-                  type="time"
-                  value={editingTask.alarmTime || ""}
-                  onChange={(e) => setEditingTask({ ...editingTask, alarmTime: e.target.value })}
-                />
+                <input type="time" value={editingTask.alarmTime || ""} onChange={(e) => setEditingTask({ ...editingTask, alarmTime: e.target.value })} />
               )}
             </div>
             <div className="modal-actions">

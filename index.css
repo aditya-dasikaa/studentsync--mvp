@@ -1,3 +1,36 @@
+/* LIGHT THEME */
+.app.light {
+  --bg-color: #f8f9fb;
+  --text-color: #1e293b;
+  --card-bg: #ffffff;
+  --card-border: rgba(0,0,0,0.05);
+  --primary-color: #3b82f6;
+}
+
+/* DARK THEME */
+.app.dark {
+  --bg-color: #1a1a1a;
+  --text-color: #f8fafc;
+  --card-bg: #1f2937;
+  --card-border: rgba(255,255,255,0.1);
+  --primary-color: #60a5fa;
+}
+
+/* Apply CSS variables globally */
+body, .dashboard, .card, .task-item, .modal {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.card-button, .save-btn {
+  background: var(--primary-color);
+}
+
 /* ============================== 
    🌐 GLOBAL STYLES 
 ============================== */
